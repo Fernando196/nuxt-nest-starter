@@ -7,7 +7,7 @@
 Este es **{{PROJECT_NAME}}**, una REST API construida con:
 - **NestJS** — framework Node.js con arquitectura modular
 - **TypeScript strict** — sin `any`, decoradores tipados
-- **TypeORM** — ORM para PostgreSQL
+- **TypeORM** — ORM para MySQL
 - **Zod** — validación de schemas (en lugar de class-validator)
 - **Swagger/OpenAPI** — documentación automática
 - **JWT** — autenticación stateless
@@ -167,7 +167,9 @@ export class User {
 ## ✅ Comandos útiles
 
 ```bash
-pnpm start:dev    # Servidor con hot-reload
+pnpm db:create    # Crea la base de datos MySQL (solo primera vez)
+pnpm start:dev    # Servidor con hot-reload (crea tablas automáticamente en dev)
+pnpm schema:sync  # Sincroniza tablas desde entidades sin arrancar el server
 pnpm build        # Build de producción
 pnpm start:prod   # Servidor de producción
 pnpm typecheck    # Verifica tipos
@@ -176,6 +178,10 @@ pnpm test:e2e     # Tests end-to-end
 pnpm migration:generate -- --name=NombreMigracion  # Nueva migración
 pnpm migration:run                                  # Correr migraciones
 ```
+
+## 🗂️ Módulo de referencia
+
+El módulo `src/modules/users/` es el módulo base de referencia. Sigue exactamente su estructura al crear nuevos módulos: entity → dto (Zod) → repository → service → controller → module.
 
 ## 📍 URLs importantes
 

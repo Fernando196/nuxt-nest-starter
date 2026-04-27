@@ -151,7 +151,7 @@ Create a complete Products module:
 - Zod DTOs: CreateProductDto, UpdateProductDto, ProductQueryDto
 - Service with full CRUD and pagination
 - REST controller with Swagger on all endpoints
-- Follow exactly the architecture of the existing example/ module
+- Follow exactly the architecture of the existing users/ module
 ```
 
 ```
