@@ -1,5 +1,5 @@
 {
-  "name": "@nuxt-nest-starter/cli",
+  "name": "nuxt-nest-starter",
   "version": "1.0.0",
   "description": "CLI para generar proyectos nuxt-nest-starter",
   "type": "commonjs",
