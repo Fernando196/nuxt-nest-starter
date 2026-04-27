@@ -7,16 +7,19 @@ import {
   DeleteDateColumn,
 } from 'typeorm'
 
-@Entity('examples')
-export class Example {
+@Entity('users')
+export class User {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
-  @Column({ length: 200 })
-  title!: string
+  @Column({ unique: true, length: 200 })
+  email!: string
 
-  @Column({ type: 'text', nullable: true })
-  description!: string | null
+  @Column({ length: 100 })
+  name!: string
+
+  @Column({ select: false })
+  passwordHash!: string
 
   @Column({ default: true })
   active!: boolean

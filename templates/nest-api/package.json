@@ -13,6 +13,8 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "test:e2e": "jest --config ./test/jest-e2e.json",
+    "db:create": "ts-node -r tsconfig-paths/register src/scripts/create-database.ts",
+    "schema:sync": "typeorm-ts-node-commonjs schema:sync -d src/config/typeorm.config.ts",
     "migration:generate": "typeorm-ts-node-commonjs migration:generate src/database/migrations/$npm_config_name -d src/config/typeorm.config.ts",
     "migration:run": "typeorm-ts-node-commonjs migration:run -d src/config/typeorm.config.ts",
     "migration:revert": "typeorm-ts-node-commonjs migration:revert -d src/config/typeorm.config.ts"
@@ -32,7 +34,8 @@
     "nestjs-zod": "^3.0.0",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
-    "pg": "^8.13.0",
+    "dotenv": "^16.4.0",
+    "mysql2": "^3.11.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "typeorm": "^0.3.20",

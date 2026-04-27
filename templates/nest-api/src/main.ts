@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core'
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
-import { patchNestJsSwagger } from 'nestjs-zod'
+import { patchNestJsSwagger, ZodValidationPipe } from 'nestjs-zod'
 import { Logger } from '@nestjs/common'
 import { AppModule } from './app.module'
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter'
@@ -21,6 +21,9 @@ async function bootstrap(): Promise<void> {
     origin: process.env['FRONTEND_URL'] ?? 'http://localhost:3000',
     credentials: true,
   })
+
+  // Pipe global de validación — transforma y valida @Body(), @Query(), @Param()
+  app.useGlobalPipes(new ZodValidationPipe())
 
   // Filtro global de excepciones
   app.useGlobalFilters(new GlobalExceptionFilter())
