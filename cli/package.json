@@ -1,6 +1,6 @@
 {
   "name": "nuxt-nest-starter",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "CLI para generar proyectos nuxt-nest-starter",
   "type": "commonjs",
   "main": "dist/index.js",
