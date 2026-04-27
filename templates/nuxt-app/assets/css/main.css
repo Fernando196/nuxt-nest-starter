@@ -1,0 +1,109 @@
+@import "tailwindcss";
+
+@theme {
+  /* ── Primario ─────────────────────────────────────────── */
+  --color-primary-light:   #f0fdfa;
+  --color-primary:         #007b6c;
+  --color-primary-dark:    #0f766e;
+  --color-primary-darker:  #134e4a;
+
+  /* ── Secundario ───────────────────────────────────────── */
+  --color-secondary-light:   #f5f3ff;
+  --color-secondary:         #7c3aed;
+  --color-secondary-dark:    #6d28d9;
+  --color-secondary-darker:  #4c1d95;
+
+  /* ── Acento ───────────────────────────────────────────── */
+  --color-accent-light:   #fff7ed;
+  --color-accent:         #f97316;
+  --color-accent-dark:    #ea580c;
+  --color-accent-darker:  #9a3412;
+
+  /* ── Backgrounds ──────────────────────────────────────── */
+  --color-background:      #f3f3f3;
+  --color-surface:         #ffffff;
+  --color-surface-hover:   oklch(0.985 0.005 240);
+  --color-subtle-bg:       oklch(0.975 0.005 240);
+  --color-muted-bg:        oklch(0.955 0.007 240);
+
+  /* ── Texto ────────────────────────────────────────────── */
+  --color-text:        oklch(0.22 0.02 250);
+  --color-text-subtle: oklch(0.62 0.012 250);
+  --color-muted:       oklch(0.48 0.015 250);
+  --color-faint:       oklch(0.75 0.01 250);
+
+  /* ── Bordes ───────────────────────────────────────────── */
+  --color-border:       oklch(0.92 0.008 240);
+  --color-border-strong: oklch(0.86 0.01 240);
+
+  /* ── Estados semánticos ───────────────────────────────── */
+  --color-success:     oklch(0.42 0.13 155);
+  --color-success-bg:  oklch(0.96 0.06 155);
+  --color-success-text: oklch(0.32 0.13 155);
+
+  --color-error:       oklch(0.58 0.2 25);
+  --color-error-bg:    oklch(0.96 0.03 40);
+  --color-error-text:  oklch(0.48 0.19 25);
+
+  --color-warning:     oklch(0.5 0.13 60);
+  --color-warning-bg:  oklch(0.97 0.04 80);
+  --color-warning-text: oklch(0.4 0.13 60);
+
+  --color-info:        oklch(0.42 0.16 230);
+  --color-info-bg:     oklch(0.96 0.03 230);
+  --color-info-text:   oklch(0.32 0.16 230);
+
+  /* ── Neutrales ────────────────────────────────────────── */
+  --color-neutral-50:  #f8fafc;
+  --color-neutral-100: #e2e8f0;
+  --color-neutral-400: #94a3b8;
+  --color-neutral-700: #334155;
+  --color-neutral-900: #0f172a;
+
+  /* ── Sombras ──────────────────────────────────────────── */
+  --shadow-xs: 0 1px 2px oklch(0.2 0.02 250 / 0.04);
+  --shadow-sm: 0 1px 3px oklch(0.2 0.02 250 / 0.06), 0 1px 2px oklch(0.2 0.02 250 / 0.04);
+  --shadow-md: 0 4px 12px oklch(0.2 0.02 250 / 0.06), 0 2px 4px oklch(0.2 0.02 250 / 0.04);
+  --shadow-lg: 0 12px 32px oklch(0.2 0.02 250 / 0.1), 0 4px 8px oklch(0.2 0.02 250 / 0.05);
+  --shadow-primary: 0 0 0 3px var(--color-primary-light);
+
+  /* ── Tipografía ───────────────────────────────────────── */
+  --font-sans: 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /* ── Transiciones ─────────────────────────────────────── */
+  --transition-border: border-color 0.1s, box-shadow 0.1s;
+
+  /* ── Safe area ────────────────────────────────────────── */
+  --spacing-safe-bottom: env(safe-area-inset-bottom);
+}
+
+/* ── Base global ──────────────────────────────────────────── */
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    font-family: var(--font-sans);
+    color: var(--color-text);
+    background-color: var(--color-background);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  button {
+    cursor: pointer;
+    font-family: inherit;
+  }
+}
