@@ -65,23 +65,114 @@ export async function createProject(
 
   console.log()
 
-  // 4. Copiar template
+  const templatesDir = getTemplatesDir()
+  const templateVars = {
+    PROJECT_NAME: projectName,
+    PROJECT_NAME_PASCAL: toPascalCase(projectName),
+    YEAR: new Date().getFullYear().toString(),
+  }
+  const copyFilter = (src: string) =>
+    !src.includes('node_modules') && !src.includes('.nuxt') && !src.includes('dist')
+
+  if (template === 'nuxt-nest-fullstack') {
+    // 4. Fullstack: copiar nest-api → backend/ y nuxt-app → frontend/
+    const spinner = ora(`Generando monorepo ${chalk.cyan(projectName)}...`).start()
+
+    try {
+      const backendDir = path.join(targetDir, 'backend')
+      const frontendDir = path.join(targetDir, 'frontend')
+
+      await fs.ensureDir(targetDir)
+
+      await Promise.all([
+        fs.copy(path.join(templatesDir, 'nest-api'), backendDir, { filter: copyFilter }),
+        fs.copy(path.join(templatesDir, 'nuxt-app'), frontendDir, { filter: copyFilter }),
+      ])
+
+      await Promise.all([
+        replaceTemplateVars(backendDir, templateVars),
+        replaceTemplateVars(frontendDir, templateVars),
+      ])
+
+      // Actualizar package.json de cada subcarpeta
+      for (const [subdir, suffix] of [[backendDir, 'backend'], [frontendDir, 'frontend']] as const) {
+        const pkgPath = path.join(subdir, 'package.json')
+        if (await fs.pathExists(pkgPath)) {
+          const pkgJson = JSON.parse(await fs.readFile(pkgPath, 'utf-8')) as Record<string, unknown>
+          pkgJson['name'] = `${projectName}-${suffix}`
+          await fs.writeFile(pkgPath, JSON.stringify(pkgJson, null, 2) + '\n', 'utf-8')
+        }
+
+        // Renombrar _gitignore → .gitignore
+        const gitignorePath = path.join(subdir, '_gitignore')
+        if (await fs.pathExists(gitignorePath)) {
+          await fs.rename(gitignorePath, path.join(subdir, '.gitignore'))
+        }
+      }
+
+      spinner.succeed(`Monorepo ${chalk.cyan(projectName)} creado`)
+    } catch (err) {
+      spinner.fail('Error al generar el monorepo')
+      console.error(err)
+      process.exit(1)
+    }
+
+    // 5. Git init
+    if (!options.skipGit) {
+      const gitSpinner = ora('Inicializando git...').start()
+      try {
+        execSync('git init', { cwd: targetDir, stdio: 'ignore' })
+        execSync('git add -A', { cwd: targetDir, stdio: 'ignore' })
+        execSync('git commit -m "chore: initial commit from nuxt-nest-starter"', { cwd: targetDir, stdio: 'ignore' })
+        gitSpinner.succeed('Git inicializado')
+      } catch {
+        gitSpinner.warn('No se pudo inicializar git (¿está instalado?)')
+      }
+    }
+
+    // 6. Instalar dependencias en ambas subcarpetas
+    if (!options.skipInstall) {
+      for (const [label, subdir] of [['backend', path.join(targetDir, 'backend')], ['frontend', path.join(targetDir, 'frontend')]] as const) {
+        const installSpinner = ora(`Instalando dependencias en ${label}...`).start()
+        try {
+          execSync(`${templateConfig.packageManager} install`, { cwd: subdir, stdio: 'ignore' })
+          installSpinner.succeed(`Dependencias de ${label} instaladas`)
+        } catch {
+          installSpinner.warn(`No se pudo instalar en ${label}. Corre: cd ${projectName}/${label} && ${templateConfig.packageManager} install`)
+        }
+      }
+    }
+
+    // 7. Mensaje final fullstack
+    console.log(`
+${chalk.bold.green('  ✓ ¡Monorepo listo para vibe coding!')}
+
+  ${chalk.gray('Estructura del proyecto:')}
+  ${chalk.cyan(projectName + '/')}
+  ${chalk.gray('├──')} ${chalk.cyan('backend/')}  ${chalk.gray('→ NestJS API  (http://localhost:3001)')}
+  ${chalk.gray('└──')} ${chalk.cyan('frontend/')} ${chalk.gray('→ Nuxt 3 App  (http://localhost:3000)')}
+
+  ${chalk.gray('Levanta el backend:')}
+  ${chalk.cyan(`cd ${projectName}/backend && ${templateConfig.packageManager} start:dev`)}
+
+  ${chalk.gray('Levanta el frontend:')}
+  ${chalk.cyan(`cd ${projectName}/frontend && ${templateConfig.packageManager} dev`)}
+
+  ${chalk.gray('Abre Claude Code en la raíz:')}
+  ${chalk.cyan(`cd ${projectName} && claude`)}
+`)
+    return
+  }
+
+  // 4. Template simple: copiar directamente
   const spinner = ora(`Generando ${chalk.cyan(projectName)} desde ${chalk.bold(templateConfig.label)}...`).start()
 
   try {
-    const templatesDir = getTemplatesDir()
     const templateSrc = path.join(templatesDir, template)
 
-    await fs.copy(templateSrc, targetDir, {
-      filter: (src: string) => !src.includes('node_modules') && !src.includes('.nuxt') && !src.includes('dist'),
-    })
+    await fs.copy(templateSrc, targetDir, { filter: copyFilter })
 
-    // Reemplazar variables {{VAR}} en archivos
-    await replaceTemplateVars(targetDir, {
-      PROJECT_NAME: projectName,
-      PROJECT_NAME_PASCAL: toPascalCase(projectName),
-      YEAR: new Date().getFullYear().toString(),
-    })
+    await replaceTemplateVars(targetDir, templateVars)
 
     // Sobreescribir el name del package.json con el nombre real del proyecto
     const pkgPath = path.join(targetDir, 'package.json')
