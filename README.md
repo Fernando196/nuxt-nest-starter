@@ -4,6 +4,7 @@
 
 **Professional scaffolding for vibe coding with Claude Code**
 
+[![npm version](https://img.shields.io/npm/v/nuxt-nest-starter?color=crimson)](https://www.npmjs.com/package/nuxt-nest-starter)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue?logo=typescript)](https://www.typescriptlang.org/)
@@ -34,7 +35,7 @@ Each template includes:
 ## 🚀 Quick start
 
 ```bash
-# Option 1: interactive CLI
+# Option 1: interactive (recommended)
 npx nuxt-nest-starter
 
 # Option 2: direct
@@ -44,7 +45,7 @@ npx nuxt-nest-starter create my-project --template nuxt-nest-fullstack
 npx nuxt-nest-starter list
 ```
 
-The CLI asks for the name, the template, and in 30 seconds you have a project ready with git initialized and dependencies installed.
+The CLI asks for the name and the template. In under a minute you have a project ready with git initialized and dependencies installed.
 
 ---
 
@@ -93,22 +94,37 @@ cd my-api && cp .env.example .env && pnpm start:dev
 # → http://localhost:3001/api/docs
 ```
 
-**Includes:** full CRUD example module, global error filter, logging and transform interceptors, Zod DTOs.
+**Includes:** full CRUD example module (users), global error filter, logging and transform interceptors, Zod DTOs.
 
 ---
 
 ### `nuxt-nest-fullstack` — Full monorepo
 
-Frontend + Backend in a single repo with shared types.
+Frontend + Backend in a single repo. The CLI copies the `nuxt-app` template into `frontend/` and the `nest-api` template into `backend/`.
 
 ```bash
 npx nuxt-nest-starter create my-fullstack --template nuxt-nest-fullstack
-cd my-fullstack && pnpm dev
-# → frontend: http://localhost:3000
-# → backend:  http://localhost:3001/api/docs
 ```
 
-**Includes everything above plus:** pnpm workspace, shared types in `packages/shared`, Nuxt proxy pointing to NestJS, dev scripts that start both services.
+Then start each service in a separate terminal:
+
+```bash
+# Backend
+cd my-fullstack/backend && pnpm start:dev
+# → http://localhost:3001/api/docs
+
+# Frontend
+cd my-fullstack/frontend && pnpm dev
+# → http://localhost:3000
+```
+
+**Includes everything from both templates above**, organized as:
+
+```
+my-fullstack/
+├── backend/   → NestJS API
+└── frontend/  → Nuxt 3 App
+```
 
 ---
 
@@ -176,11 +192,11 @@ Add rate limiting to the auth module:
 
 ```
 nuxt-nest-starter/
-├── cli/                          # CLI to generate projects
+├── cli/                          # CLI source code
 │   └── src/
-│       ├── commands/create.ts    # Main logic
-│       ├── utils/helpers.ts      # Utilities
-│       └── types/index.ts        # CLI types
+│       ├── commands/create.ts    # Main scaffolding logic
+│       ├── utils/helpers.ts      # Template resolution & file utilities
+│       └── types/index.ts        # Template definitions
 ├── templates/
 │   ├── nuxt-app/                 # Nuxt 3 template
 │   │   ├── CLAUDE.md             # ← The most important file
@@ -189,20 +205,18 @@ nuxt-nest-starter/
 │   │   ├── composables/
 │   │   ├── stores/
 │   │   └── types/
-│   ├── nest-api/                 # NestJS template
-│   │   ├── CLAUDE.md             # ← The most important file
-│   │   ├── src/
-│   │   │   ├── common/           # Filters, guards, interceptors
-│   │   │   ├── config/           # TypeORM, JWT config
-│   │   │   └── modules/example/  # Example CRUD
-│   │   └── tsconfig.json
-│   └── nuxt-nest-fullstack/      # Monorepo template
-│       ├── CLAUDE.md
-│       ├── frontend/
-│       └── backend/
+│   └── nest-api/                 # NestJS template
+│       ├── CLAUDE.md             # ← The most important file
+│       ├── src/
+│       │   ├── common/           # Filters, guards, interceptors
+│       │   ├── config/           # TypeORM config
+│       │   └── modules/users/    # Example CRUD module
+│       └── tsconfig.json
 └── docs/
     └── prompts.md                # More ready-to-use prompts
 ```
+
+> The `nuxt-nest-fullstack` template is generated dynamically by the CLI — it combines `nest-api` and `nuxt-app` at runtime, so it has no dedicated folder.
 
 ---
 
@@ -212,17 +226,23 @@ Got a template, a better CLAUDE.md, or more prompts? PRs are welcome!
 
 ```bash
 # 1. Fork + clone
-git clone https://github.com/your-username/nuxt-nest-starter
+git clone https://github.com/Fernando196/nuxt-nest-starter
 cd nuxt-nest-starter
 
-# 2. Create your template
+# 2. Install and build the CLI
+npm install
+
+# 3. Create your template
 cp -r templates/nuxt-app templates/my-template
 # Edit CLAUDE.md and the files
 
-# 3. Test that the CLI generates it correctly
+# 4. Register it in cli/src/types/index.ts (add to the TEMPLATES object)
+
+# 5. Build and test
+npm run build
 node cli/dist/index.js create test-project --template my-template
 
-# 4. PR with a description of what problem it solves
+# 6. PR with a description of what problem it solves
 ```
 
 **Template ideas that are missing:**
@@ -236,7 +256,7 @@ node cli/dist/index.js create test-project --template my-template
 
 ## 📄 License
 
-MIT © {{YEAR}} — Made with ☕ and vibe coding.
+MIT © 2026 — Made with ☕ and vibe coding.
 
 ---
 
