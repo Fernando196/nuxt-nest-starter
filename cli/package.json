@@ -1,11 +1,11 @@
 {
-  "name": "nuxt-nest-starter",
-  "version": "1.0.3",
-  "description": "CLI para generar proyectos nuxt-nest-starter",
+  "name": "create-nuxt-nest",
+  "version": "0.1.0",
+  "description": "CLI tool to create a Nuxt.js and Nest.js project",
   "type": "commonjs",
   "main": "dist/index.js",
   "bin": {
-    "nuxt-nest-starter": "dist/index.js"
+    "create-nuxt-nest": "dist/index.js"
   },
   "scripts": {
     "build": "tsc",
