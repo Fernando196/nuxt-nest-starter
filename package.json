@@ -1,16 +1,22 @@
 {
-  "name": "create-nuxt-nest",
+  "name": "nuxt-nest-starter",
   "version": "0.1.0",
   "description": "CLI tool to create a Nuxt.js and Nest.js project",
   "type": "commonjs",
-  "main": "dist/index.js",
+  "main": "cli/dist/index.js",
   "bin": {
-    "create-nuxt-nest": "dist/index.js"
+    "nuxt-nest-starter": "cli/dist/index.js"
   },
+  "files": [
+    "cli/dist",
+    "templates",
+    "README.md"
+  ],
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
-    "start": "node dist/index.js"
+    "build": "tsc -p cli/tsconfig.json",
+    "prepare": "tsc -p cli/tsconfig.json",
+    "dev": "tsc -p cli/tsconfig.json --watch",
+    "start": "node cli/dist/index.js"
   },
   "dependencies": {
     "chalk": "^4.1.2",
