@@ -3,7 +3,7 @@ import { program } from 'commander'
 import chalk from 'chalk'
 import { createProject } from './commands/create'
 
-const pkg = require('../../package.json') as { version: string }
+const pkg = require('../package.json') as { version: string }
 
 console.log(
   chalk.bold.cyan('\n  🚀 nuxt-nest-starter') +
