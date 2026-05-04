@@ -11,12 +11,12 @@ export async function createProject(
   projectName: string | undefined,
   options: ProjectOptions
 ): Promise<void> {
-  // 1. Nombre del proyecto
+  // 1. Project name
   if (!projectName) {
     const response = await prompt<{ name: string }>({
       type: 'input',
       name: 'name',
-      message: '¿Nombre del proyecto?',
+      message: 'Project name?',
       initial: 'my-vibe-app',
       validate: validateProjectName,
     })
@@ -24,8 +24,8 @@ export async function createProject(
   }
 
   if (!validateProjectName(projectName)) {
-    console.error(chalk.red(`\n  ✗ Nombre inválido: "${projectName}"`))
-    console.error(chalk.gray('  Usa solo letras minúsculas, números y guiones\n'))
+    console.error(chalk.red(`\n  ✗ Invalid name: "${projectName}"`))
+    console.error(chalk.gray('  Use only lowercase letters, numbers and hyphens\n'))
     process.exit(1)
   }
 
@@ -35,7 +35,7 @@ export async function createProject(
     const response = await prompt<{ template: Template }>({
       type: 'select',
       name: 'template',
-      message: '¿Qué template quieres usar?',
+      message: 'Which template do you want to use?',
       choices: Object.values(TEMPLATES).map(t => ({
         name: t.name,
         message: `${chalk.bold(t.label)} ${chalk.gray('→ ' + t.description)}`,
@@ -48,16 +48,16 @@ export async function createProject(
   const templateConfig = TEMPLATES[template]
   const targetDir = path.resolve(process.cwd(), projectName)
 
-  // 3. Verificar si el directorio ya existe
+  // 3. Check if directory already exists
   if (await fs.pathExists(targetDir)) {
     const { overwrite } = await prompt<{ overwrite: boolean }>({
       type: 'confirm',
       name: 'overwrite',
-      message: `La carpeta "${projectName}" ya existe. ¿Sobreescribir?`,
+      message: `Folder "${projectName}" already exists. Overwrite?`,
       initial: false,
     })
     if (!overwrite) {
-      console.log(chalk.yellow('\n  Operación cancelada.\n'))
+      console.log(chalk.yellow('\n  Operation cancelled.\n'))
       process.exit(0)
     }
     await fs.remove(targetDir)
@@ -78,8 +78,8 @@ export async function createProject(
   }
 
   if (template === 'nuxt-nest-fullstack') {
-    // 4. Fullstack: copiar nest-api → backend/ y nuxt-app → frontend/
-    const spinner = ora(`Generando monorepo ${chalk.cyan(projectName)}...`).start()
+    // 4. Fullstack: copy nest-api → backend/ and nuxt-app → frontend/
+    const spinner = ora(`Generating monorepo ${chalk.cyan(projectName)}...`).start()
 
     try {
       const backendDir = path.join(targetDir, 'backend')
@@ -113,62 +113,62 @@ export async function createProject(
         }
       }
 
-      spinner.succeed(`Monorepo ${chalk.cyan(projectName)} creado`)
+      spinner.succeed(`Monorepo ${chalk.cyan(projectName)} created`)
     } catch (err) {
-      spinner.fail('Error al generar el monorepo')
+      spinner.fail('Error generating monorepo')
       console.error(err)
       process.exit(1)
     }
 
     // 5. Git init
     if (!options.skipGit) {
-      const gitSpinner = ora('Inicializando git...').start()
+      const gitSpinner = ora('Initializing git...').start()
       try {
         execSync('git init', { cwd: targetDir, stdio: 'ignore' })
         execSync('git add -A', { cwd: targetDir, stdio: 'ignore' })
         execSync('git commit -m "chore: initial commit from nuxt-nest-starter"', { cwd: targetDir, stdio: 'ignore' })
-        gitSpinner.succeed('Git inicializado')
+        gitSpinner.succeed('Git initialized')
       } catch {
-        gitSpinner.warn('No se pudo inicializar git (¿está instalado?)')
+        gitSpinner.warn('Could not initialize git (is it installed?)')
       }
     }
 
-    // 6. Instalar dependencias en ambas subcarpetas
+    // 6. Install dependencies in both subfolders
     if (!options.skipInstall) {
       for (const [label, subdir] of [['backend', path.join(targetDir, 'backend')], ['frontend', path.join(targetDir, 'frontend')]] as const) {
-        const installSpinner = ora(`Instalando dependencias en ${label}...`).start()
+        const installSpinner = ora(`Installing ${label} dependencies...`).start()
         try {
           execSync(`${templateConfig.packageManager} install`, { cwd: subdir, stdio: 'ignore' })
-          installSpinner.succeed(`Dependencias de ${label} instaladas`)
+          installSpinner.succeed(`${label} dependencies installed`)
         } catch {
-          installSpinner.warn(`No se pudo instalar en ${label}. Corre: cd ${projectName}/${label} && ${templateConfig.packageManager} install`)
+          installSpinner.warn(`Could not install in ${label}. Run: cd ${projectName}/${label} && ${templateConfig.packageManager} install`)
         }
       }
     }
 
-    // 7. Mensaje final fullstack
+    // 7. Final message fullstack
     console.log(`
-${chalk.bold.green('  ✓ ¡Monorepo listo para vibe coding!')}
+${chalk.bold.green('  ✓ Monorepo ready for vibe coding!')}
 
-  ${chalk.gray('Estructura del proyecto:')}
+  ${chalk.gray('Project structure:')}
   ${chalk.cyan(projectName + '/')}
   ${chalk.gray('├──')} ${chalk.cyan('backend/')}  ${chalk.gray('→ NestJS API  (http://localhost:3001)')}
   ${chalk.gray('└──')} ${chalk.cyan('frontend/')} ${chalk.gray('→ Nuxt 3 App  (http://localhost:3000)')}
 
-  ${chalk.gray('Levanta el backend:')}
+  ${chalk.gray('Start the backend:')}
   ${chalk.cyan(`cd ${projectName}/backend && ${templateConfig.packageManager} start:dev`)}
 
-  ${chalk.gray('Levanta el frontend:')}
+  ${chalk.gray('Start the frontend:')}
   ${chalk.cyan(`cd ${projectName}/frontend && ${templateConfig.packageManager} dev`)}
 
-  ${chalk.gray('Abre Claude Code en la raíz:')}
+  ${chalk.gray('Open Claude Code at the root:')}
   ${chalk.cyan(`cd ${projectName} && claude`)}
 `)
     return
   }
 
-  // 4. Template simple: copiar directamente
-  const spinner = ora(`Generando ${chalk.cyan(projectName)} desde ${chalk.bold(templateConfig.label)}...`).start()
+  // 4. Simple template: copy directly
+  const spinner = ora(`Generating ${chalk.cyan(projectName)} from ${chalk.bold(templateConfig.label)}...`).start()
 
   try {
     const templateSrc = path.join(templatesDir, template)
@@ -177,7 +177,7 @@ ${chalk.bold.green('  ✓ ¡Monorepo listo para vibe coding!')}
 
     await replaceTemplateVars(targetDir, templateVars)
 
-    // Sobreescribir el name del package.json con el nombre real del proyecto
+    // Override package.json name with the actual project name
     const pkgPath = path.join(targetDir, 'package.json')
     if (await fs.pathExists(pkgPath)) {
       const pkgRaw = await fs.readFile(pkgPath, 'utf-8')
@@ -192,51 +192,51 @@ ${chalk.bold.green('  ✓ ¡Monorepo listo para vibe coding!')}
       await fs.rename(gitignorePath, path.join(targetDir, '.gitignore'))
     }
 
-    spinner.succeed(`Proyecto ${chalk.cyan(projectName)} creado`)
+    spinner.succeed(`Project ${chalk.cyan(projectName)} created`)
   } catch (err) {
-    spinner.fail('Error al copiar el template')
+    spinner.fail('Error copying template')
     console.error(err)
     process.exit(1)
   }
 
   // 5. Git init
   if (!options.skipGit) {
-    const gitSpinner = ora('Inicializando git...').start()
+    const gitSpinner = ora('Initializing git...').start()
     try {
       execSync('git init', { cwd: targetDir, stdio: 'ignore' })
       execSync('git add -A', { cwd: targetDir, stdio: 'ignore' })
       execSync('git commit -m "chore: initial commit from nuxt-nest-starter"', { cwd: targetDir, stdio: 'ignore' })
-      gitSpinner.succeed('Git inicializado')
+      gitSpinner.succeed('Git initialized')
     } catch {
-      gitSpinner.warn('No se pudo inicializar git (¿está instalado?)')
+      gitSpinner.warn('Could not initialize git (is it installed?)')
     }
   }
 
-  // 6. Instalar dependencias
+  // 6. Install dependencies
   if (!options.skipInstall) {
-    const installSpinner = ora(`Instalando dependencias con ${templateConfig.packageManager}...`).start()
+    const installSpinner = ora(`Installing dependencies with ${templateConfig.packageManager}...`).start()
     try {
       execSync(`${templateConfig.packageManager} install`, { cwd: targetDir, stdio: 'ignore' })
-      installSpinner.succeed('Dependencias instaladas')
+      installSpinner.succeed('Dependencies installed')
     } catch {
-      installSpinner.warn(`No se pudo instalar. Corre: cd ${projectName} && ${templateConfig.packageManager} install`)
+      installSpinner.warn(`Could not install. Run: cd ${projectName} && ${templateConfig.packageManager} install`)
     }
   }
 
-  // 7. Mensaje final
+  // 7. Final message
   console.log(`
-${chalk.bold.green('  ✓ ¡Listo para vibe coding!')}
+${chalk.bold.green('  ✓ Ready for vibe coding!')}
 
-  ${chalk.gray('Entra a tu proyecto:')}
+  ${chalk.gray('Enter your project:')}
   ${chalk.cyan(`cd ${projectName}`)}
 
-  ${chalk.gray('Abre Claude Code:')}
+  ${chalk.gray('Open Claude Code:')}
   ${chalk.cyan('claude')}
 
-  ${chalk.gray('El CLAUDE.md ya está configurado con instrucciones pro.')}
-  ${chalk.gray('Usa los prompts en')} ${chalk.cyan('docs/prompts.md')} ${chalk.gray('para empezar.')}
+  ${chalk.gray('CLAUDE.md is already configured with pro instructions.')}
+  ${chalk.gray('Use the prompts in')} ${chalk.cyan('docs/prompts.md')} ${chalk.gray('to get started.')}
 
-  ${chalk.gray('Levanta el servidor:')}
+  ${chalk.gray('Start the server:')}
   ${chalk.cyan(`${templateConfig.packageManager} dev`)}
   ${chalk.gray('→ ' + templateConfig.postInstallMessage)}
 `)

@@ -32,7 +32,7 @@ export const TEMPLATES: Record<Template, TemplateConfig> = {
   'nuxt-nest-fullstack': {
     name: 'nuxt-nest-fullstack',
     label: 'Nuxt + NestJS Fullstack',
-    description: 'Monorepo completo: Nuxt 3 frontend + NestJS backend + shared types',
+    description: 'Full monorepo: Nuxt 3 frontend + NestJS backend + shared types',
     packageManager: 'pnpm',
     postInstallMessage: 'pnpm dev → frontend :3000 + backend :3001',
   },

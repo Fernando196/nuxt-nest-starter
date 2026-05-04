@@ -12,24 +12,24 @@ console.log(
 
 program
   .name('nuxt-nest-starter')
-  .description('Genera proyectos listos para vibe coding con Claude Code')
+  .description('Generate projects ready for vibe coding with Claude Code')
   .version(pkg.version)
 
 program
   .command('create [project-name]')
   .alias('c')
-  .description('Crea un nuevo proyecto desde un template')
-  .option('-t, --template <template>', 'Template a usar: nuxt-app | nest-api | nuxt-nest-fullstack')
-  .option('--skip-install', 'Omitir instalación de dependencias')
-  .option('--skip-git', 'Omitir inicialización de git')
+  .description('Create a new project from a template')
+  .option('-t, --template <template>', 'Template to use: nuxt-app | nest-api | nuxt-nest-fullstack')
+  .option('--skip-install', 'Skip dependency installation')
+  .option('--skip-git', 'Skip git initialization')
   .action(createProject)
 
 program
   .command('list')
   .alias('ls')
-  .description('Lista todos los templates disponibles')
+  .description('List all available templates')
   .action(() => {
-    console.log(chalk.bold('\n  Templates disponibles:\n'))
+    console.log(chalk.bold('\n  Available templates:\n'))
     const templates = [
       { name: 'nuxt-app', desc: 'Nuxt 3 + TypeScript + Pinia + TailwindCSS', color: chalk.green },
       { name: 'nest-api', desc: 'NestJS + TypeScript + TypeORM + Swagger', color: chalk.blue },
@@ -41,7 +41,7 @@ program
     })
   })
 
-// Default: si no se pasa subcomando, corre create directamente
+// Default: if no subcommand is passed, run create directly
 if (process.argv.length === 2) {
   process.argv.push('create')
 }
