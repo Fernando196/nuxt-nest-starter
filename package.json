@@ -1,6 +1,6 @@
 {
   "name": "nuxt-nest-starter",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "CLI tool to create a Nuxt.js and Nest.js project",
   "type": "commonjs",
   "main": "cli/dist/index.js",

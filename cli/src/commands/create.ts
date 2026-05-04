@@ -71,8 +71,11 @@ export async function createProject(
     PROJECT_NAME_PASCAL: toPascalCase(projectName),
     YEAR: new Date().getFullYear().toString(),
   }
-  const copyFilter = (src: string) =>
-    !src.includes('node_modules') && !src.includes('.nuxt') && !src.includes('dist')
+  const EXCLUDED_DIRS = new Set(['node_modules', '.nuxt', '.output', 'dist'])
+  const copyFilter = (src: string) => {
+    const relative = path.relative(templatesDir, src)
+    return !relative.split(path.sep).some(segment => EXCLUDED_DIRS.has(segment))
+  }
 
   if (template === 'nuxt-nest-fullstack') {
     // 4. Fullstack: copiar nest-api → backend/ y nuxt-app → frontend/
